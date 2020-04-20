@@ -1,0 +1,43 @@
+---
+title: "Índice de la Bolsa de Valores de Caracas"
+date: '`r paste("Actualizado al ", Sys.Date())`'
+---
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+library(xts)
+library(readxl)
+library(dplyr)
+library(highcharter)
+
+  
+ibc <- as.data.frame(read_excel("C:/Users/analista04/Documents/R/grupointeraval.github.io/ibc.xlsx",  col_types = c("date", "numeric", "numeric")))
+
+serie_ibc=xts(ibc[,2], as.Date(ibc$fecha))
+grafico_ibc=hchart(serie_ibc, name = "IBC") 
+grafico_ibc
+
+```
+
+### IBC vs Dólar/Bs. vs Inflación vs Bitcoin
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+  
+variaciones <- as.data.frame( read_excel("C:/Users/analista04/Documents/R/grupointeraval.github.io/variaciones.xlsx",  col_types = c("date", "numeric", "numeric",  "numeric", "numeric",  "numeric","numeric","numeric")))
+
+serie_ibc=xts(variaciones[,3], as.Date(variaciones$fecha))
+serie_inflacion=xts(variaciones[,4], as.Date(variaciones$fecha))
+serie_dolar=xts(variaciones[,6], as.Date(variaciones$fecha))
+serie_bitcoin=xts(variaciones[,8], as.Date(variaciones$fecha))
+
+grafico_variacion=hchart(serie_ibc, name = "% Variación mensual IBC", type="line") %>% 
+hc_add_series(serie_inflacion, name = "% Variación mensual inflación", type="line")%>% 
+  hc_add_series(serie_dolar, name = "% Variación mensual Dólar/Bs.", type="line")%>% 
+    hc_add_series(serie_bitcoin, name = "% Variación mensual BTC/Dólar.", type="line")%>% 
+hc_legend(enabled = T)
+
+grafico_variacion
+
+```
